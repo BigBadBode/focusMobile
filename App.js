@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React , { useState } from 'react';
+import React , { useState, useEffect } from 'react';
 import {  StyleSheet, Text, View, Pressable, Image, Modal } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,6 +7,7 @@ const Stack = createNativeStackNavigator();
 import Button from './components/Button.js';
 import { schedulePushNotification } from './components/Notification.js';
 import 'react-native-reanimated';
+import ImageViewer from './components/Image';
 
 const primaryOne = "#7AB2B2"
 const primaryTwo = "#CDE8E5"
@@ -16,6 +17,23 @@ const secondaryTwo = "blue"
 const secondaryThree = "red"
 const backgroundOne = "white"
 const backgroundTwo = "#EEF7FF"
+
+const ThumbsDown = require('./assets/ThumbsDown.jpeg');
+
+const MotivationalImages = [
+  require('./assets/albert.jpeg'),
+  require('./assets/TimFerris.png'),
+  require('./assets/obama.jpeg'),
+  require('./assets/Larry.png'),
+  require('./assets/King2.png'),
+  require('./assets/robert.png'),
+  require('./assets/kobe.png'),
+];
+
+const getMotivationalImage = () => {
+  const randomIndex = Math.floor(Math.random() * MotivationalImages.length);
+  return MotivationalImages[randomIndex];
+};
 
 export default function App() {
   return (
@@ -36,6 +54,11 @@ export default function App() {
           component={Notifications}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="Motivation"
+          component={Motivation}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -47,7 +70,8 @@ const Home = ({navigation}) => {
       <Text style={styles.main_title}>Ye Olde Focus App</Text>
       <View style={styles.menu_background}>
         <Button theme="primary" text='Focus Timers' onPress={() => navigation.navigate('Timers')} color={primaryOne}/>
-        <Button theme='primary' text='Notifications' onPress={() => navigation.navigate('Notifications')} color={primaryTwo}/>
+        <Button theme="primary" text='Motivation' onPress={() => navigation.navigate('Motivation')} color={primaryOne}/>
+        {/* <Button theme='primary' text='Notifications' onPress={() => navigation.navigate('Notifications')} color={primaryTwo}/> */}
         <StatusBar style="auto" />
       </View>
     </View>
@@ -88,6 +112,26 @@ const Timers = ({navigation}) => {
         }} color={primaryOne}/>
       </View>
       <Button theme="primary" text='Back' onPress={() => navigation.navigate('Home')} color={primaryTwo}/>
+    </View>
+  )
+}
+
+const Motivation = ({navigation}) => {
+  
+  const [randomImage, setRandomImage] = useState(getMotivationalImage());
+
+  useEffect(() => {
+    setRandomImage(getMotivationalImage());
+  }, []);
+
+  return(
+    <View style={styles.container}>
+      <Text style={styles.main_title}>Motivation</Text>
+      <View style={styles.menu_background}>
+        <ImageViewer imageSource={randomImage}/>
+        <Button theme="primary" text='Back' onPress={() => navigation.navigate('Home')} color={primaryTwo}/>
+        <StatusBar style="auto" />
+      </View>
     </View>
   )
 }
